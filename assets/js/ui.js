@@ -1,163 +1,222 @@
-/* ============================================================
-   TIBEX DEMO — ui.js  (sidebar, topbar, toast, modal, guards)
-   ============================================================ */
-(function (global) {
-  const DB = global.TIBEX_DB;
+/**
+ * TIBEX Demo — UI helper funksiyalari
+ * Shell, sidebar, modal, toast, formatlash va badge'lar
+ */
+(function () {
+  const DB = window.TIBEX_DB;
 
-  const MENU = [
-    { key: "dashboard", href: "dashboard.html", icon: "fa-chart-pie", label: "Dashboard", roles: ["admin", "reception", "doctor", "cashier", "lab_doctor", "assistant_admin"] },
-    { key: "patients", href: "patients.html", icon: "fa-user-injured", label: "Bemorlar", roles: ["admin", "reception", "doctor", "assistant_admin"] },
-    { key: "appointments", href: "appointments.html", icon: "fa-calendar-check", label: "Qabul", roles: ["admin", "reception", "doctor", "assistant_admin"] },
-    { key: "doctors", href: "doctors.html", icon: "fa-user-md", label: "Doktorlar", roles: ["admin", "reception", "assistant_admin"] },
-    { key: "lab-results", href: "lab-results.html", icon: "fa-vial", label: "Tahlil natijalari", roles: ["admin", "doctor", "lab_doctor", "assistant_admin"] },
-    { key: "payments", href: "payments.html", icon: "fa-credit-card", label: "To'lovlar", roles: ["admin", "cashier", "assistant_admin"] },
-    { key: "reports", href: "reports.html", icon: "fa-file-invoice-dollar", label: "Hisobot", roles: ["admin", "assistant_admin"] },
-    { key: "audit-log", href: "audit-log.html", icon: "fa-clipboard-list", label: "Audit jurnal", roles: ["admin", "assistant_admin"] },
-    { key: "settings", href: "settings.html", icon: "fa-gear", label: "Sozlamalar", roles: ["admin", "reception", "doctor", "cashier", "lab_doctor", "assistant_admin"] }
-  ];
+  // ─── Konstantalar ─────────────────────────────────────────
+  const STATUS_LABEL = {
+    waiting:     "Kutmoqda",
+    delayed:     "Kechiktirildi",
+    in_progress: "Qabulda",
+    completed:   "Yakunlandi",
+    cancelled:   "Bekor qilindi",
+    no_show:     "Kelmadi",
+    paid:        "To'langan",
+    partial:     "Qismiy",
+    refunded:    "Qaytarilgan"
+  };
+
+  const STATUS_TONE = {
+    waiting: "info", delayed: "warning", in_progress: "teal",
+    completed: "success", cancelled: "danger", no_show: "muted",
+    paid: "success", partial: "warning", refunded: "muted"
+  };
 
   const ROLE_LABEL = {
     admin: "Administrator", reception: "Qabulxona", doctor: "Shifokor",
-    cashier: "Kassir", lab_doctor: "Lab. shifokor", assistant_admin: "Yordamchi admin (faqat o'qish)"
+    cashier: "Kassir", lab_doctor: "Lab. shifokor", assistant: "Yordamchi admin"
   };
 
-  function requireAuth() {
-    const user = DB.currentUser();
-    if (!user) { window.location.href = "login.html"; return null; }
-    return user;
+  const MENU = [
+    { key: "dashboard",    label: "Dashboard",     icon: "fa-chart-pie",        href: "dashboard.html" },
+    { key: "patients",     label: "Bemorlar",      icon: "fa-user-injured",     href: "patients.html" },
+    { key: "appointments", label: "Qabul",         icon: "fa-calendar-check",   href: "appointments.html" },
+    { key: "doctors",      label: "Doktorlar",     icon: "fa-user-md",          href: "doctors.html" },
+    { key: "payments",     label: "To'lovlar",     icon: "fa-credit-card",      href: "payments.html" },
+    { key: "lab-results",  label: "Tahlillar",     icon: "fa-vial",             href: "lab-results.html" },
+    { key: "reports",      label: "Hisobotlar",    icon: "fa-chart-line",       href: "reports.html" },
+    { key: "audit-log",    label: "Audit jurnal",  icon: "fa-clipboard-list",   href: "audit-log.html" },
+    { key: "settings",     label: "Sozlamalar",    icon: "fa-gear",             href: "settings.html" }
+  ];
+
+  // ─── Escape ───────────────────────────────────────────────
+  function escapeHtml(s) {
+    if (s == null) return "";
+    return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   }
 
-  function initTheme() {
-    const stored = localStorage.getItem("tibex_theme") || "light";
-    document.documentElement.setAttribute("data-theme", stored);
+  // ─── Formatlash ───────────────────────────────────────────
+  function fmtMoney(n) {
+    if (n == null || isNaN(n)) return "0 so'm";
+    return new Intl.NumberFormat("uz-UZ").format(Math.round(n)) + " so'm";
   }
-  initTheme();
 
-  function toggleTheme() {
-    const cur = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", cur);
-    localStorage.setItem("tibex_theme", cur);
+  function fmtDate(iso) {
+    if (!iso) return "—";
+    const d = new Date(iso);
+    return d.toLocaleDateString("uz-UZ", { year: "numeric", month: "2-digit", day: "2-digit" });
+  }
+
+  function fmtTime(iso) {
+    if (!iso) return "—";
+    return new Date(iso).toLocaleTimeString("uz-UZ", { hour: "2-digit", minute: "2-digit" });
+  }
+
+  function fmtDateTime(iso) {
+    if (!iso) return "—";
+    return fmtDate(iso) + " " + fmtTime(iso);
   }
 
   function initials(name) {
-    return (name || "?").split(" ").filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join("");
+    if (!name) return "?";
+    return name.split(/\s+/).slice(0, 2).map(w => w[0]).join("").toUpperCase();
   }
 
-  function renderShell(activeKey) {
-    const user = requireAuth();
-    if (!user) return null;
-    const root = document.getElementById("app-shell");
-    if (!root) return user;
-
-    const items = MENU.filter(m => m.roles.includes(user.role));
-    root.innerHTML = `
-      <aside class="sidebar">
-        <a href="dashboard.html" class="brand"><i class="fa-solid fa-heart-pulse"></i><span>TIBEX</span></a>
-        <div class="user-badge">
-          <div class="avatar">${initials(user.fullname)}</div>
-          <div class="user-badge-info">
-            <div class="name">${user.fullname}</div>
-            <div class="role">${ROLE_LABEL[user.role] || user.role}</div>
-          </div>
-          <i class="fa-solid fa-arrow-right-from-bracket logout-link" id="logout-btn" title="Chiqish"></i>
-        </div>
-        <ul class="menu-list">
-          ${items.map(m => `<li class="menu-item ${m.key === activeKey ? "active" : ""}">
-              <a href="${m.href}"><i class="fa-solid ${m.icon}"></i><span>${m.label}</span></a>
-            </li>`).join("")}
-        </ul>
-        <div class="sidebar-footer">
-          <button class="theme-toggle" id="theme-toggle-btn"><i class="fa-solid fa-circle-half-stroke"></i><span>Mavzu</span></button>
-          <a class="back-to-site" href="../index.html"><i class="fa-solid fa-arrow-left"></i><span>Reklama saytiga</span></a>
-        </div>
-      </aside>
-      <div class="main-col">
-        <header class="topbar">
-          <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Menyu"><i class="fa-solid fa-bars"></i></button>
-          <div class="topbar-title" id="topbar-title"></div>
-          <span class="demo-pill"><i class="fa-solid fa-flask"></i> DEMO rejimi — ma'lumotlar shu brauzerda saqlanadi</span>
-        </header>
-        <main class="content" id="page-content"></main>
-      </div>`;
-
-    document.getElementById("logout-btn").addEventListener("click", () => {
-      DB.logout();
-      window.location.href = "login.html";
-    });
-    document.getElementById("theme-toggle-btn").addEventListener("click", toggleTheme);
-    document.getElementById("mobile-menu-btn").addEventListener("click", () => {
-      document.querySelector(".sidebar").classList.toggle("open");
-    });
-    return user;
+  // ─── Badge'lar ────────────────────────────────────────────
+  function statusBadge(status) {
+    const label = STATUS_LABEL[status] || status;
+    const tone = STATUS_TONE[status] || "muted";
+    return `<span class="badge badge-${tone}">${escapeHtml(label)}</span>`;
   }
 
-  function setTitle(text) {
-    const t = document.getElementById("topbar-title");
-    if (t) t.textContent = text;
+  function flagBadge(flag) {
+    const map = { "me'yorda": "success", "past": "info", "yuqori": "danger" };
+    return `<span class="badge badge-${map[flag] || "muted"}">${escapeHtml(flag)}</span>`;
   }
 
-  function toast(message, kind = "info") {
+  // ─── Toast ────────────────────────────────────────────────
+  function ensureToastHost() {
     let host = document.getElementById("toast-host");
     if (!host) {
       host = document.createElement("div");
       host.id = "toast-host";
+      host.className = "toast-host";
       document.body.appendChild(host);
     }
+    return host;
+  }
+
+  function toast(message, type = "info") {
+    const host = ensureToastHost();
     const el = document.createElement("div");
-    el.className = `toast toast-${kind}`;
-    const icon = kind === "error" ? "fa-circle-exclamation" : kind === "success" ? "fa-circle-check" : "fa-circle-info";
-    el.innerHTML = `<i class="fa-solid ${icon}"></i><span>${message}</span>`;
+    el.className = `toast toast-${type}`;
+    const icon = { success: "fa-circle-check", error: "fa-circle-exclamation", info: "fa-circle-info", warning: "fa-triangle-exclamation" }[type] || "fa-circle-info";
+    el.innerHTML = `<i class="fa-solid ${icon}"></i><span>${escapeHtml(message)}</span>`;
     host.appendChild(el);
     requestAnimationFrame(() => el.classList.add("show"));
-    setTimeout(() => { el.classList.remove("show"); setTimeout(() => el.remove(), 250); }, 3400);
+    setTimeout(() => {
+      el.classList.remove("show");
+      setTimeout(() => el.remove(), 300);
+    }, 3200);
   }
 
-  function openModal(html) {
-    let overlay = document.getElementById("modal-overlay");
-    if (!overlay) {
-      overlay = document.createElement("div");
-      overlay.id = "modal-overlay";
-      overlay.className = "modal-overlay";
-      document.body.appendChild(overlay);
-      overlay.addEventListener("click", (e) => { if (e.target === overlay) closeModal(); });
-    }
-    overlay.innerHTML = `<div class="modal-box">${html}</div>`;
-    overlay.classList.add("show");
-    document.body.style.overflow = "hidden";
+  // ─── Modal ────────────────────────────────────────────────
+  function openModal(innerHtml) {
+    closeModal();
+    const overlay = document.createElement("div");
+    overlay.className = "modal-overlay";
+    overlay.id = "modal-overlay";
+    overlay.innerHTML = `<div class="modal-box" role="dialog" aria-modal="true">${innerHtml}</div>`;
+    overlay.addEventListener("click", (e) => { if (e.target === overlay) closeModal(); });
+    document.body.appendChild(overlay);
+    requestAnimationFrame(() => overlay.classList.add("show"));
+    // ESC
+    overlay._esc = (e) => { if (e.key === "Escape") closeModal(); };
+    document.addEventListener("keydown", overlay._esc);
   }
+
   function closeModal() {
-    const overlay = document.getElementById("modal-overlay");
-    if (overlay) overlay.classList.remove("show");
-    document.body.style.overflow = "";
+    const o = document.getElementById("modal-overlay");
+    if (!o) return;
+    if (o._esc) document.removeEventListener("keydown", o._esc);
+    o.classList.remove("show");
+    setTimeout(() => o.remove(), 200);
   }
 
-  function fmtMoney(n) { return Number(n || 0).toLocaleString("ru-RU") + " so'm"; }
-  function fmtDate(iso) { const d = new Date(iso); return d.toLocaleDateString("uz-UZ", { day: "2-digit", month: "2-digit", year: "numeric" }); }
-  function fmtTime(iso) { const d = new Date(iso); return d.toLocaleTimeString("uz-UZ", { hour: "2-digit", minute: "2-digit" }); }
-  function fmtDateTime(iso) { return fmtDate(iso) + " · " + fmtTime(iso); }
-  function escapeHtml(s) { return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
-
-  const STATUS_LABEL = {
-    waiting: "Kutmoqda", in_progress: "Qabulda", completed: "Yakunlandi",
-    delayed: "Kechiktirildi", cancelled: "Bekor qilindi", no_show: "Kelmadi",
-    paid: "To'langan", partial: "Qisman to'langan", refunded: "Qaytarilgan"
-  };
-  const STATUS_CLASS = {
-    waiting: "badge-info", in_progress: "badge-teal", completed: "badge-success",
-    delayed: "badge-warning", cancelled: "badge-danger", no_show: "badge-muted",
-    paid: "badge-success", partial: "badge-warning", refunded: "badge-muted"
-  };
-  function statusBadge(status) {
-    return `<span class="badge ${STATUS_CLASS[status] || "badge-muted"}">${STATUS_LABEL[status] || status}</span>`;
+  // ─── Theme ────────────────────────────────────────────────
+  function applyTheme() {
+    const saved = localStorage.getItem("tibex_theme") || "light";
+    document.documentElement.dataset.theme = saved;
   }
-  function flagBadge(flag) {
-    const cls = flag === "me'yorda" ? "badge-success" : flag === "yuqori" ? "badge-danger" : "badge-warning";
-    return `<span class="badge ${cls}">${flag}</span>`;
+  function toggleTheme() {
+    const cur = document.documentElement.dataset.theme || "light";
+    const next = cur === "light" ? "dark" : "light";
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem("tibex_theme", next);
+    toast(`Mavzu: ${next === "dark" ? "Tungi" : "Kunduzgi"}`, "info");
+  }
+  applyTheme();
+
+  // ─── Shell (sidebar + topbar) ─────────────────────────────
+  function renderShell(activeKey) {
+    const user = DB.currentUser();
+    if (!user) { window.location.href = "login.html"; return null; }
+
+    const allowed = DB.ROLE_PAGES[user.role] || [];
+    if (!allowed.includes(activeKey)) {
+      window.location.href = allowed[0] ? allowed[0] + ".html" : "login.html";
+      return null;
+    }
+
+    const shell = document.getElementById("app-shell");
+    const menuItems = MENU.filter(m => allowed.includes(m.key));
+
+    shell.innerHTML = `
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+          <i class="fa-solid fa-heart-pulse"></i>
+          <span>TIBEX</span>
+        </div>
+        <nav class="sidebar-nav">
+          ${menuItems.map(m => `
+            <a class="nav-item ${m.key === activeKey ? "active" : ""}" href="${m.href}">
+              <i class="fa-solid ${m.icon}"></i><span>${m.label}</span>
+            </a>`).join("")}
+        </nav>
+        <div class="sidebar-foot">
+          <div class="user-chip">
+            <div class="mini-avatar">${initials(user.fullname)}</div>
+            <div class="user-meta">
+              <b>${escapeHtml(user.fullname)}</b>
+              <span>${ROLE_LABEL[user.role]}</span>
+            </div>
+          </div>
+          <button class="btn btn-sm logout-btn" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+      </aside>
+      <div class="main">
+        <header class="topbar">
+          <button class="nav-toggle-btn" id="sidebar-toggle" aria-label="Menyu"><i class="fa-solid fa-bars"></i></button>
+          <h1 id="page-title" class="page-title">—</h1>
+          <div class="topbar-actions">
+            <span class="demo-pill"><i class="fa-solid fa-flask"></i> Demo</span>
+            <a class="icon-btn" href="https://github.com/Aziko29/tibex" target="_blank" rel="noopener" title="GitHub"><i class="fa-brands fa-github"></i></a>
+          </div>
+        </header>
+        <main class="page-content" id="page-content"></main>
+      </div>`;
+
+    document.getElementById("logout-btn").addEventListener("click", () => { DB.logout(); window.location.href = "login.html"; });
+    document.getElementById("sidebar-toggle").addEventListener("click", () => {
+      document.getElementById("sidebar").classList.toggle("open");
+    });
+
+    return user;
   }
 
-  global.TIBEX_UI = {
-    renderShell, setTitle, toast, openModal, closeModal, requireAuth,
-    fmtMoney, fmtDate, fmtTime, fmtDateTime, escapeHtml, initials,
-    statusBadge, flagBadge, STATUS_LABEL, ROLE_LABEL, toggleTheme
+  function setTitle(t) {
+    const el = document.getElementById("page-title");
+    if (el) el.textContent = t;
+    document.title = t + " · TIBEX Demo";
+  }
+
+  // ─── Eksport ──────────────────────────────────────────────
+  window.TIBEX_UI = {
+    STATUS_LABEL, STATUS_TONE, ROLE_LABEL, MENU,
+    escapeHtml, fmtMoney, fmtDate, fmtTime, fmtDateTime, initials,
+    statusBadge, flagBadge, toast, openModal, closeModal,
+    applyTheme, toggleTheme, renderShell, setTitle
   };
-})(window);
+})();

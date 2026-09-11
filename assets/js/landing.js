@@ -1,59 +1,88 @@
-/* ============================================================
-   TIBEX — landing.js (hero navbat animatsiyasi, mobil menyu)
-   ============================================================ */
+/* TIBEX — Landing jonli navbat simulyatsiyasi */
 (function () {
-  // Theme init (shared key with demo app so the toggle feels consistent)
-  const saved = localStorage.getItem("tibex_theme") || "light";
-  document.documentElement.setAttribute("data-theme", saved);
+  const COLUMNS = {
+    waiting:     [],
+    in_progress: [],
+    completed:   []
+  };
+  const NAMES = [
+    "Aliyev S.", "Karimova N.", "Rahimov J.", "Tosheva D.",
+    "Ergashev B.", "Yusupova M.", "Nazarov A.", "Sattorova L.",
+    "Xolmatov R.", "Ibrohimova Z."
+  ];
+  const DOCS = ["Dr. Toshmatov", "Dr. Yusupova", "Dr. Aliyev", "Dr. Nazarova"];
+  let idCounter = 100;
 
-  const toggle = document.getElementById("nav-toggle");
-  const links = document.getElementById("nav-links");
-  if (toggle) toggle.addEventListener("click", () => links.classList.toggle("open"));
-
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  // ---- Live queue simulation in the hero (mirrors the real state-machine) ----
-  const names = ["A. Yoqubov", "Z. Rahimova", "B. Islomov", "M. Tursunova", "R. G'ulomov", "S. Nurmatova", "U. Safarov", "N. Xolmatova"];
-  const docs = ["Kardiolog", "Pediatr", "Nevrolog", "Ginekolog", "Ortoped", "LOR"];
-  const cols = { waiting: document.getElementById("col-waiting"), progress: document.getElementById("col-progress"), done: document.getElementById("col-done") };
-  if (cols.waiting && !reduceMotion) {
-    let seq = 100;
-    function makeTicket() {
-      const n = names[Math.floor(Math.random() * names.length)];
-      const d = docs[Math.floor(Math.random() * docs.length)];
-      const el = document.createElement("div");
-      el.className = "hv-ticket";
-      el.innerHTML = `<div class="n">#${seq++} ${n}</div><div class="s">${d}</div>`;
-      return el;
-    }
-    function moveOne() {
-      // waiting -> progress
-      if (cols.waiting.children.length) {
-        const t = cols.waiting.firstElementChild;
-        cols.progress.prepend(t);
-        if (cols.progress.children.length > 2) cols.progress.removeChild(cols.progress.lastElementChild);
-      }
-      // progress -> done (the older one)
-      if (cols.progress.children.length > 1) {
-        const t = cols.progress.lastElementChild;
-        cols.done.prepend(t);
-        if (cols.done.children.length > 3) cols.done.removeChild(cols.done.lastElementChild);
-      }
-      // add a fresh one waiting
-      cols.waiting.prepend(makeTicket());
-      if (cols.waiting.children.length > 3) cols.waiting.removeChild(cols.waiting.lastElementChild);
-    }
-    for (let i = 0; i < 3; i++) cols.waiting.appendChild(makeTicket());
-    cols.progress.appendChild(makeTicket());
-    cols.done.appendChild(makeTicket());
-    setInterval(moveOne, 2600);
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  function timeStr() {
+    const h = 9 + Math.floor(Math.random() * 6);
+    const m = Math.floor(Math.random() * 60);
+    return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
   }
 
-  // Smooth scroll for in-page nav
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener("click", (e) => {
-      const target = document.querySelector(a.getAttribute("href"));
-      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" }); links && links.classList.remove("open"); }
-    });
-  });
+  function addTicket() {
+    const ticket = {
+      id: ++idCounter,
+      name: pick(NAMES),
+      doc: pick(DOCS),
+      time: timeStr()
+    };
+    COLUMNS.waiting.unshift(ticket);
+    render();
+
+    // Kutish → Qabulda (2-5s)
+    setTimeout(() => {
+      const idx = COLUMNS.waiting.findIndex(t => t.id === ticket.id);
+      if (idx !== -1) {
+        COLUMNS.waiting.splice(idx, 1);
+        COLUMNS.in_progress.unshift(ticket);
+        render();
+
+        // Qabulda → Yakunlandi (3-6s)
+        setTimeout(() => {
+          const i2 = COLUMNS.in_progress.findIndex(t => t.id === ticket.id);
+          if (i2 !== -1) {
+            COLUMNS.in_progress.splice(i2, 1);
+            COLUMNS.completed.unshift(ticket);
+            if (COLUMNS.completed.length > 4) COLUMNS.completed.pop();
+            render();
+          }
+        }, 3000 + Math.random() * 3000);
+      }
+    }, 2000 + Math.random() * 3000);
+  }
+
+  function ticketHtml(t) {
+    return `<div class="hv-card" data-id="${t.id}">
+      <b>${t.name}</b>
+      <span>${t.time} · ${t.doc}</span>
+    </div>`;
+  }
+
+  function render() {
+    const w = document.getElementById("col-waiting");
+    const p = document.getElementById("col-progress");
+    const d = document.getElementById("col-done");
+    if (!w || !p || !d) return;
+    w.innerHTML = COLUMNS.waiting.slice(0, 3).map(ticketHtml).join("") || `<div class="muted" style="font-size:10.5px;">—</div>`;
+    p.innerHTML = COLUMNS.in_progress.slice(0, 3).map(ticketHtml).join("") || `<div class="muted" style="font-size:10.5px;">—</div>`;
+    d.innerHTML = COLUMNS.completed.slice(0, 3).map(ticketHtml).join("") || `<div class="muted" style="font-size:10.5px;">—</div>`;
+  }
+
+  // Boshlang'ich 2 ta
+  addTicket();
+  setTimeout(addTicket, 800);
+
+  // Har 4-8s da yangi
+  setInterval(() => {
+    if (COLUMNS.waiting.length < 3) addTicket();
+  }, 4500);
+
+  // Nav toggle
+  const toggle = document.getElementById("nav-toggle");
+  const links = document.getElementById("nav-links");
+  if (toggle && links) {
+    toggle.addEventListener("click", () => links.classList.toggle("open"));
+    links.querySelectorAll("a").forEach(a => a.addEventListener("click", () => links.classList.remove("open")));
+  }
 })();

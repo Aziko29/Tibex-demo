@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="uz" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TIBEX — Klinika boshqaruv tizimi | Ochiq kodli demo</title>
-<meta name="description" content="TIBEX — klinika va tibbiyot markazlari uchun boshqaruv tizimi. Bemorlar, qabul, to'lovlar va laboratoriya tahlillarini bitta joyda boshqaring. Interaktiv demo bilan tanishing.">
+<title>TIBEX — Klinika boshqaruv tizimi | Futuristik demo</title>
+<meta name="description" content="TIBEX — klinika va tibbiyot markazlari uchun futuristik boshqaruv tizimi. Bemorlar, qabul, to'lovlar va laboratoriya tahlillari bitta ekranda. Interaktiv demo.">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/landing.css">
 </head>
@@ -18,14 +18,14 @@
   <div class="nav-inner">
     <a href="#top" class="nav-brand"><i class="fa-solid fa-heart-pulse"></i><span>TIBEX</span></a>
     <div class="nav-links" id="nav-links">
-      <a href="#loyiha">Loyiha haqida</a>
+      <a href="#loyiha">Loyiha</a>
       <a href="#imkoniyatlar">Imkoniyatlar</a>
       <a href="#rollar">Rollar</a>
       <a href="#muallif">Muallif</a>
       <a href="#tez-orada">Tez orada</a>
     </div>
     <div class="nav-cta">
-      <a class="btn btn-primary btn-sm" href="app/login.html"><i class="fa-solid fa-play"></i> Demo'ni sinab ko'rish</a>
+      <a class="btn btn-primary btn-sm" href="app/login.html"><i class="fa-solid fa-play"></i><span>Demo</span></a>
     </div>
     <button class="nav-toggle" id="nav-toggle" aria-label="Menyu"><i class="fa-solid fa-bars"></i></button>
   </div>
@@ -36,10 +36,10 @@
     <div>
       <span class="eyebrow-badge"><i class="fa-solid fa-flask"></i> To'liq versiya tez orada — hozircha interaktiv demo</span>
       <h1>Klinikangizning har bir navbati, to'lovi va tahlili — <span class="accent">bitta ekranda.</span></h1>
-      <p class="lead">TIBEX — bemorlarni ro'yxatga olish, qabul navbatini boshqarish, to'lov va qarzdorlikni kuzatish hamda laboratoriya natijalarini yuritish uchun yaratilgan veb-tizim. Bu sahifa uning ochiq kodli frontend-simulyatsiyasi — logikasini o'zingiz sinab ko'rishingiz mumkin.</p>
+      <p class="lead">TIBEX — bemorlarni ro'yxatga olish, qabul navbatini boshqarish, to'lov va qarzdorlikni kuzatish hamda laboratoriya natijalarini yuritish uchun futuristik veb-tizim. Bu sahifa uning ochiq kodli frontend-simulyatsiyasi.</p>
       <div class="hero-ctas">
         <a class="btn btn-primary btn-lg" href="app/login.html"><i class="fa-solid fa-play"></i> Demo'ni sinab ko'rish</a>
-        <a class="btn btn-lg" href="https://github.com/Aziko29/tibex" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> GitHub'da ko'rish</a>
+        <a class="btn btn-lg" href="https://github.com/Aziko29/Tibex-demo" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> GitHub'da ko'rish</a>
       </div>
       <div class="hero-meta">
         <div class="m-item"><b>6</b><span>rol va ruxsat darajasi</span></div>
@@ -50,9 +50,9 @@
     <div class="hero-visual">
       <div class="hv-head"><span><span class="live-dot"></span>Jonli navbat — simulyatsiya</span><span>state-machine</span></div>
       <div class="hv-cols">
-        <div class="hv-col"><h5>KUTMOQDA</h5><div id="col-waiting"></div></div>
-        <div class="hv-col"><h5>QABULDA</h5><div id="col-progress"></div></div>
-        <div class="hv-col"><h5>YAKUNLANDI</h5><div id="col-done"></div></div>
+        <div class="hv-col"><h5>Kutmoqda</h5><div id="col-waiting"></div></div>
+        <div class="hv-col"><h5>Qabulda</h5><div id="col-progress"></div></div>
+        <div class="hv-col"><h5>Yakunlandi</h5><div id="col-done"></div></div>
       </div>
     </div>
   </div>
@@ -62,12 +62,12 @@
   <div class="wrap">
     <div class="section-head">
       <div class="k">Loyiha haqida</div>
-      <h2>Klinika, shifoxona va tibbiyot markazlari uchun yagona boshqaruv tizimi</h2>
-      <p>TIBEX bemorni ro'yxatga olishdan tortib, shifokor qabuli, to'lov va laboratoriya natijalarigacha bo'lgan butun jarayonni bitta platformaga jamlaydi. Backend Python/FastAPI asosida qurilgan, shaxsiy ma'lumotlar AES-256-GCM bilan shifrlanadi. Ushbu sahifadagi demo esa faqat vitrina — u haqiqiy serverga ulanmagan, real backend'ning interfeys va ish mantiqini ko'rsatib beradi.</p>
+      <h2>Klinika va tibbiyot markazlari uchun yagona boshqaruv tizimi</h2>
+      <p>TIBEX bemorni ro'yxatga olishdan tortib, shifokor qabuli, to'lov va laboratoriya natijalarigacha bo'lgan butun jarayonni bitta platformaga jamlaydi. Backend Python/FastAPI, AES-256-GCM shifrlash. Demo esa faqat frontend vitrina.</p>
     </div>
     <div class="feature-list" id="imkoniyatlar">
       <div class="feature-item"><i class="fa-solid fa-user-injured"></i><h3>Bemorlar boshqaruvi</h3><p>Ro'yxatga olish, tahrirlash, soft-delete, allergiya va surunkali kasalliklar tarixi, davolanish vaqt chizig'i.</p></div>
-      <div class="feature-item"><i class="fa-solid fa-calendar-check"></i><h3>Qabul (navbat)</h3><p>State-machine asosida holatlar: kutmoqda → qabulda → yakunlandi, kechiktirish va bekor qilish sabablari bilan.</p></div>
+      <div class="feature-item"><i class="fa-solid fa-calendar-check"></i><h3>Qabul (navbat)</h3><p>State-machine: kutmoqda → qabulda → yakunlandi, kechiktirish va bekor qilish sabablari bilan.</p></div>
       <div class="feature-item"><i class="fa-solid fa-user-md"></i><h3>Shifokorlar</h3><p>Mutaxassislik, malaka toifasi, narxnoma va ish jadvali — har biri uchun alohida profil.</p></div>
       <div class="feature-item"><i class="fa-solid fa-credit-card"></i><h3>To'lovlar</h3><p>Real vaqtda qarz hisobi (narx − to'langan) va ikki bosqichli qaytarim: admin bekor qiladi, kassir qaytaradi.</p></div>
       <div class="feature-item"><i class="fa-solid fa-vial"></i><h3>Laboratoriya tahlillari</h3><p>20+ standart shablon, me'yoriy qiymatlar va me'yordan chetga chiqishni avtomatik aniqlash.</p></div>
@@ -79,9 +79,9 @@
 <section class="section" style="padding-top:0;">
   <div class="wrap about-grid">
     <div class="about-copy">
-      <div class="k" style="color:var(--sapphire); font-weight:600; font-size:13px; margin-bottom:8px;">Texnologik stek</div>
-      <h2 style="font-size:24px; margin:0 0 14px;">Zamonaviy, xavfsiz va kengaytiriladigan asos</h2>
-      <p>Backend Python 3.11+ va FastAPI ustida qurilgan, ma'lumotlar bazasi bilan SQLAlchemy 2.0 va Alembic orqali ishlaydi. Frontend — Jinja2 shablonlar, Vanilla JS va Chart.js. Ushbu demo sahifa esa xuddi shu vizual tildan foydalangan holda, to'liq mustaqil (backend'siz) HTML/CSS/JS bilan qayta qurilgan.</p>
+      <div class="k" style="color:var(--neon-cyan); font-weight:700; font-size:11.5px; letter-spacing:0.15em; text-transform:uppercase; margin-bottom:12px;">Texnologik stek</div>
+      <h2>Zamonaviy, xavfsiz va kengaytiriladigan asos</h2>
+      <p>Backend Python 3.11+ va FastAPI ustida qurilgan, SQLAlchemy 2.0 va Alembic orqali ma'lumotlar bazasi bilan ishlaydi. Frontend — Jinja2, Vanilla JS, Chart.js. Ushbu demo esa xuddi shu vizual tildan foydalangan holda, to'liq mustaqil HTML/CSS/JS bilan qayta qurilgan.</p>
       <div class="stack-badges">
         <span class="stack-chip"><i class="fa-brands fa-python"></i> Python 3.11+</span>
         <span class="stack-chip">FastAPI</span>
@@ -96,39 +96,37 @@
         <span class="stack-chip">Telegram Bot</span>
       </div>
     </div>
-    <div class="card" style="padding:28px;">
-      <h3 style="margin-top:0; font-size:15.5px;">Qo'shimcha imkoniyatlar</h3>
+    <div class="card">
+      <h3 style="margin-top:0; font-size:15px;">Qo'shimcha imkoniyatlar</h3>
       <div class="stat-line"><span>Dashboard</span><b>Jonli KPI va navbat</b></div>
-      <div class="stat-line"><span>Hisobotlar</span><b>Shifokor samaradorligi, band vaqt</b></div>
+      <div class="stat-line"><span>Hisobotlar</span><b>Shifokor samaradorligi</b></div>
       <div class="stat-line"><span>Zaxira nusxa</span><b>Avtomatik va qo'lda</b></div>
-      <div class="stat-line"><span>Eslatmalar</span><b>Telegram bot, 24s/2s oldin</b></div>
+      <div class="stat-line"><span>Eslatmalar</span><b>Telegram bot, 24s/2s</b></div>
       <div class="stat-line"><span>Mavzu</span><b>Dark / Light / Auto</b></div>
-      <div class="stat-line"><span>Bemor portali</span><b>SMS-kod orqali kirish (FAZA 2)</b></div>
+      <div class="stat-line"><span>Bemor portali</span><b>SMS-kod (FAZA 2)</b></div>
     </div>
   </div>
 </section>
 
-<section class="section" id="rollar" style="background:var(--bg-secondary);">
+<section class="section" id="rollar">
   <div class="wrap">
     <div class="section-head">
       <div class="k">Rollar va ruxsatlar</div>
       <h2>Har bir xodim faqat o'ziga tegishli bo'limni ko'radi</h2>
       <p>Demo login sahifasida shu 6 rolning har biriga bir zumda kirib, interfeys ularga qanday ko'rinishini solishtirib ko'rishingiz mumkin.</p>
     </div>
-    <div class="card" style="padding:0; overflow:hidden;">
-      <div class="table-wrap" style="border:none; border-radius:0;">
-        <table class="roles-table">
-          <thead><tr><th>Rol</th><th>Kirish huquqi</th></tr></thead>
-          <tbody>
-            <tr><td>Admin</td><td>To'liq huquq — barcha bo'limlar, foydalanuvchilar, zaxira nusxa</td></tr>
-            <tr><td>Qabulxona</td><td>Bemorlar, qabul (navbat) va to'lovlarni yuritish</td></tr>
-            <tr><td>Shifokor</td><td>O'z qabullari, tahlil natijalari, davolanish tarixi</td></tr>
-            <tr><td>Kassir</td><td>Faqat to'lovlar va ikki bosqichli qaytarimlar</td></tr>
-            <tr><td>Lab. shifokor</td><td>Faqat tahlil natijalari va o'ziga biriktirilgan bemorlar</td></tr>
-            <tr><td>Yordamchi admin</td><td>Faqat o'qish — hisobotlar, audit jurnal, xodimlar ro'yxati</td></tr>
-          </tbody>
-        </table>
-      </div>
+    <div class="table-wrap">
+      <table class="roles-table">
+        <thead><tr><th>Rol</th><th>Kirish huquqi</th></tr></thead>
+        <tbody>
+          <tr><td>Admin</td><td>To'liq huquq — barcha bo'limlar, foydalanuvchilar, zaxira nusxa</td></tr>
+          <tr><td>Qabulxona</td><td>Bemorlar, qabul (navbat) va to'lovlarni yuritish</td></tr>
+          <tr><td>Shifokor</td><td>O'z qabullari, tahlil natijalari, davolanish tarixi</td></tr>
+          <tr><td>Kassir</td><td>Faqat to'lovlar va ikki bosqichli qaytarimlar</td></tr>
+          <tr><td>Lab. shifokor</td><td>Faqat tahlil natijalari va o'ziga biriktirilgan bemorlar</td></tr>
+          <tr><td>Yordamchi admin</td><td>Faqat o'qish — hisobotlar, audit jurnal, xodimlar ro'yxati</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </section>
@@ -144,11 +142,11 @@
       <div>
         <h3>Aziko29</h3>
         <span class="role-tag">TIBEX loyihasining muallifi · Full-stack dasturchi</span>
-        <p>TIBEX'ni men yakka o'zim, real klinikalarda kuzatilgan muammolarni (qog'oz jurnallar, navbat chalkashligi, to'lov nazoratining yo'qligi) hal qilish maqsadida ishlab chiqdim. Loyiha Python/FastAPI backend, xavfsiz shifrlash va rol asosidagi kirish nazorati bilan qurilgan — kichik va o'rta klinikalar uchun amaliy, tezkor va tushunarli bo'lishi ustida ishlayman.</p>
-        <p>Ushbu reklama sayti va interaktiv demo — loyihani jamiyat bilan bo'lishish va foydalanuvchi fikr-mulohazalarini yig'ish uchun ochiq kod sifatida taqdim etilmoqda.</p>
+        <p>TIBEX'ni real klinikalarda kuzatilgan muammolarni (qog'oz jurnallar, navbat chalkashligi, to'lov nazoratining yo'qligi) hal qilish maqsadida ishlab chiqdim. Python/FastAPI backend, xavfsiz shifrlash va rol asosidagi kirish nazorati bilan qurilgan.</p>
+        <p>Ushbu reklama sayti va interaktiv demo — loyihani jamiyat bilan bo'lishish va fikr-mulohazalar yig'ish uchun ochiq kod sifatida taqdim etilmoqda.</p>
         <div class="author-links">
           <a href="https://github.com/Aziko29" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> github.com/Aziko29</a>
-          <a href="https://github.com/Aziko29/tibex" target="_blank" rel="noopener"><i class="fa-solid fa-code-branch"></i> tibex repositoriysi</a>
+          <a href="https://github.com/Aziko29/Tibex-demo" target="_blank" rel="noopener"><i class="fa-solid fa-code-branch"></i> tibex-demo repo</a>
         </div>
       </div>
     </div>
@@ -159,25 +157,25 @@
   <div class="wrap">
     <div class="soon-band">
       <div class="soon-head"><span class="soon-badge"><i class="fa-solid fa-hourglass-half"></i> Tez orada</span></div>
-      <h2>To'liq versiya — jonli serverda, real ma'lumotlar bazasi bilan — yaqin orada tayyor bo'ladi.</h2>
-      <p>Hozircha ko'rayotganingiz frontend simulyatsiya. Backend (FastAPI + PostgreSQL/SQLite), SMS orqali bemor portali va Telegram eslatmalari bilan to'liq versiya ustida ish davom etmoqda.</p>
+      <h2>To'liq versiya — jonli serverda, real ma'lumotlar bazasi bilan — yaqin orada.</h2>
+      <p>Hozircha ko'rayotganingiz frontend simulyatsiya. Backend (FastAPI + PostgreSQL), SMS orqali bemor portali va Telegram eslatmalari ustida ish davom etmoqda.</p>
       <div class="soon-list">
-        <span><i class="fa-solid fa-server"></i> Jonli backend ulanishi</span>
-        <span><i class="fa-solid fa-mobile-screen"></i> Bemor portali (SMS-kod)</span>
-        <span><i class="fa-solid fa-bell"></i> Telegram eslatmalari</span>
-        <span><i class="fa-solid fa-id-card"></i> OneID integratsiyasi</span>
+        <span><i class="fa-solid fa-server"></i> Jonli backend</span>
+        <span><i class="fa-solid fa-mobile-screen"></i> Bemor portali (SMS)</span>
+        <span><i class="fa-solid fa-bell"></i> Telegram eslatmalar</span>
+        <span><i class="fa-solid fa-id-card"></i> OneID integratsiya</span>
       </div>
-      <a class="btn btn-teal btn-lg" href="https://github.com/Aziko29/tibex" target="_blank" rel="noopener"><i class="fa-solid fa-star"></i> Yangiliklardan xabardor bo'lish uchun GitHub'da Star/Watch bosing</a>
+      <a class="btn btn-teal btn-lg" href="https://github.com/Aziko29/Tibex-demo" target="_blank" rel="noopener"><i class="fa-solid fa-star"></i> GitHub'da Star bosing</a>
     </div>
   </div>
 </section>
 
 <footer class="footer">
   <div class="wrap footer-inner">
-    <div><i class="fa-solid fa-heart-pulse"></i> TIBEX — ochiq kodli demo sayti · barcha ma'lumotlar shartli (fictional)</div>
-    <div style="display:flex; gap:18px;">
+    <div><i class="fa-solid fa-heart-pulse"></i> TIBEX — ochiq kodli demo · ma'lumotlar shartli</div>
+    <div style="display:flex; gap:20px;">
       <a href="app/login.html">Demo</a>
-      <a href="https://github.com/Aziko29/tibex" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/Aziko29/Tibex-demo" target="_blank" rel="noopener">GitHub</a>
       <a href="#top">Yuqoriga</a>
     </div>
   </div>
