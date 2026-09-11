@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kirish · TIBEX Demo</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<style>
+  body{ min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--navy-800); padding:20px;
+    background-image: radial-gradient(circle at 15% 20%, rgba(0,229,255,.10), transparent 40%), radial-gradient(circle at 85% 80%, rgba(14,165,160,.14), transparent 45%);}
+  .login-wrap{ width:100%; max-width:900px; display:grid; grid-template-columns:1.1fr 1fr; background:var(--bg-card); border-radius:22px; overflow:hidden; box-shadow:0 30px 70px rgba(0,0,0,.35);}
+  .login-side{ background:linear-gradient(165deg, var(--navy-800), #081c3a); color:#fff; padding:44px 38px; display:flex; flex-direction:column; justify-content:space-between; }
+  .login-side .brand{ display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-size:21px; font-weight:700;}
+  .login-side .brand i{ color:var(--teal); }
+  .login-side h2{ font-size:22px; line-height:1.35; margin:30px 0 14px; }
+  .login-side p{ color:#AFC2D9; font-size:13.5px; line-height:1.6; }
+  .login-side .foot{ font-size:12px; color:#7F93AC; }
+  .login-form{ padding:44px 40px; }
+  .login-form h1{ font-size:24px; margin:0 0 6px; }
+  .login-form .sub{ color:var(--text-secondary); font-size:13.5px; margin-bottom:26px; }
+  .field{ margin-bottom:16px; }
+  .field label{ display:block; font-size:12.5px; font-weight:600; color:var(--text-secondary); margin-bottom:6px;}
+  .field input{ width:100%; padding:11px 13px; border:1px solid var(--border-color); border-radius:10px; font-size:14px; font-family:inherit;}
+  .field input:focus{ outline:none; border-color:var(--sapphire); box-shadow:0 0 0 3px rgba(36,84,214,.15); }
+  .btn-login{ width:100%; padding:12px; border:none; border-radius:10px; background:var(--sapphire); color:#fff; font-weight:700; font-size:14.5px; cursor:pointer; font-family:inherit;}
+  .btn-login:hover{ background:var(--sapphire-hover); }
+  .demo-users{ margin-top:22px; border-top:1px solid var(--border-color); padding-top:18px; }
+  .demo-users p{ font-size:12px; color:var(--text-muted); margin:0 0 10px; }
+  .demo-user-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .demo-user-btn{ text-align:left; border:1px solid var(--border-color); background:var(--bg-secondary); border-radius:9px; padding:8px 10px; cursor:pointer; font-size:12px; font-family:inherit; color:var(--text-primary);}
+  .demo-user-btn:hover{ border-color:var(--sapphire); }
+  .demo-user-btn b{ display:block; font-size:12.5px; }
+  .err{ background:rgba(239,68,68,.1); color:#EF4444; border:1px solid rgba(239,68,68,.3); padding:9px 12px; border-radius:8px; font-size:13px; margin-bottom:14px; display:none;}
+  @media (max-width:760px){ .login-wrap{ grid-template-columns:1fr; } .login-side{ display:none; } }
+</style>
+</head>
+<body>
+  <div class="login-wrap">
+    <div class="login-side">
+      <div class="brand"><i class="fa-solid fa-heart-pulse"></i><span>TIBEX</span></div>
+      <div>
+        <h2>Klinikangiz uchun to'liq boshqaruv tizimi — endi jonli demoda.</h2>
+        <p>Bu sahifa TIBEX'ning ochiq kodli frontend-simulyatsiyasi. Haqiqiy backend yo'q — barcha amallar shu brauzerdagi vaqtinchalik ma'lumotlar bazasida bajariladi, shuning uchun istalgancha sinab ko'rishingiz mumkin.</p>
+      </div>
+      <div class="foot">© 2026 TIBEX · Ochiq kodli demo · <a href="https://github.com/Aziko29/tibex" style="color:#AFC2D9;" target="_blank" rel="noopener">GitHub</a></div>
+    </div>
+    <div class="login-form">
+      <h1>Xush kelibsiz</h1>
+      <p class="sub">Rolni tanlang yoki pastdagi tugmalar orqali bir zumda kiring.</p>
+      <div class="err" id="err-box">Login yoki parol xato.</div>
+      <form id="login-form">
+        <div class="field"><label>Foydalanuvchi nomi</label><input type="text" id="username" placeholder="masalan: admin" autocomplete="username"></div>
+        <div class="field"><label>Parol</label><input type="password" id="password" placeholder="••••••••" autocomplete="current-password"></div>
+        <button class="btn-login" type="submit">Kirish</button>
+      </form>
+      <div class="demo-users">
+        <p>Yoki demo rol bilan bir zumda kiring:</p>
+        <div class="demo-user-grid">
+          <button class="demo-user-btn" data-u="admin" data-p="admin123"><b>Admin</b>to'liq huquq</button>
+          <button class="demo-user-btn" data-u="reception" data-p="demo123"><b>Qabulxona</b>bemor/qabul</button>
+          <button class="demo-user-btn" data-u="doctor" data-p="demo123"><b>Shifokor</b>o'z qabullari</button>
+          <button class="demo-user-btn" data-u="cashier" data-p="demo123"><b>Kassir</b>to'lovlar</button>
+          <button class="demo-user-btn" data-u="lab" data-p="demo123"><b>Lab. shifokor</b>tahlillar</button>
+          <button class="demo-user-btn" data-u="assistant" data-p="demo123"><b>Yordamchi admin</b>faqat o'qish</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<script src="../assets/js/store.js"></script>
+<script src="js/login.js"></script>
+</body>
+</html>
